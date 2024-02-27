@@ -1,4 +1,6 @@
 import socket
+import statistics
+
 from pythonping import ping
 import matplotlib.pyplot as plt
 import requests
@@ -17,10 +19,9 @@ def get_ip(site_url):
 def ping_website(site_url):
     try:
         response = ping(site_url, size=4, count=11)
-        print(response)
-        avg_rtt = response.rtt_avg_ms
         rtt_times = [resp.time_elapsed_ms for resp in response]
-        return avg_rtt, rtt_times
+        stddev_rtt = statistics.stdev(rtt_times)
+        return stddev_rtt, rtt_times
     except Exception as err:
         print(f"Error: {err}")
         return None, None
@@ -58,8 +59,8 @@ url_to_parse = "https://finance.rambler.ru/currencies/"
 ip = get_ip(url_to_ping)
 print(f"The IP address of {url_to_ping} is {ip}")
 
-avgRTT, timesRTT = ping_website(url_to_ping)
-print(f"Среднее арифметическое RTT = {avgRTT}")
+stddevRRT, timesRTT = ping_website(url_to_ping)
+print(f"Среднее квадратичное отклонение RTT = {stddevRRT}")
 
 print_RTT(timesRTT)
 
